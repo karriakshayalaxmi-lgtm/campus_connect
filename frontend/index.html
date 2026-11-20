@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f5f0">
+    <meta name="description" content="Discover campus events and manage your registrations with QuadPulse.">
+    <title>QuadPulse | Campus events</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Red+Hat+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="QuadPulse home">
+        <span class="brand-mark material-symbols-outlined" aria-hidden="true">bolt</span>
+        <span>QuadPulse</span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link is-active" href="#discover">Discover</a>
+        <a class="nav-link" href="#my-registrations">My registrations</a>
+        <a class="nav-link" href="#hosted-events">Hosted events</a>
+      </nav>
+      <div class="api-indicator" id="api-indicator" data-state="loading">
+        <span class="api-dot" aria-hidden="true"></span>
+        <span id="api-indicator-label">Connecting</span>
+      </div>
+    </header>
+
+    <main id="top" class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="eyebrow-rule"></span> CAMPUS / EVENTS</p>
+          <h1 id="page-title">Make room for<br><em>something good.</em></h1>
+          <p class="intro-text">Find what is happening around campus, then save your place.</p>
+          <img class="intro-photo" src="https://lh3.googleusercontent.com/aida/ALJJyrAEDFEzoF3obyHjXZZfKUDd2Po6962KnzkM04WRSv30IO7IUic6JIKSD9029LJVmKWbB5dTacBS7akqOx8Jb-sj7Q9R0edPConftMtzJv-21we3ceyIK42HX_BzSk27e4OZMRNE_PhbdmUjbTstACuzg0PXgEfaQbd3YPmE9TLn7gqzviIyJk9DzkH47jbyJv99-Fo0DhE0bPTItjBwKoPQC6o-qioQIMziuyIOhoS_YRtts31DeZLfNgIVcg" alt="Students collaborating at a campus event" loading="lazy">
+        </div>
+        <div class="identity-panel">
+          <form id="backend-form" class="backend-form">
+            <label class="field-label" for="backend-url">Backend API URL</label>
+            <div class="identity-form">
+              <input id="backend-url" name="backend_url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://your-service.onrender.com" aria-describedby="backend-help" required>
+              <button class="button button-dark" type="submit">Connect</button>
+            </div>
+            <p id="backend-help" class="identity-help">Enter your Render service URL, without an /api suffix.</p>
+          </form>
+          <div class="identity-divider"></div>
+          <div class="identity-heading">
+            <span class="material-symbols-outlined" aria-hidden="true">fingerprint</span>
+            <div>
+              <p class="identity-title">Your campus ID</p>
+              <p class="identity-caption">Used to attach registrations to your account</p>
+            </div>
+          </div>
+          <form id="identity-form" class="identity-form">
+            <label class="visually-hidden" for="user-id">Your database user UUID</label>
+            <input id="user-id" name="user_id" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Paste your user UUID" aria-describedby="identity-help" required>
+            <button class="button button-dark" type="submit">Save ID</button>
+          </form>
+          <p id="identity-help" class="identity-help">Your UUID stays in this browser only.</p>
+        </div>
+      </section>
+
+      <section id="discover" class="content-section" aria-labelledby="events-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE CAMPUS CALENDAR</p>
+            <h2 id="events-title">Upcoming events</h2>
+          </div>
+          <div class="heading-tools">
+            <span id="event-count" class="result-count">Loading events</span>
+            <button id="refresh-events" class="icon-button" type="button" title="Refresh events" aria-label="Refresh events">
+              <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-field">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            <span class="visually-hidden">Search events</span>
+            <input id="event-search" type="search" placeholder="Search by event title">
+          </label>
+          <label class="sort-field">
+            <span class="sort-label">SORT</span>
+            <select id="event-sort" aria-label="Sort events">
+              <option value="title">Title A to Z</option>
+              <option value="capacity">Capacity</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="events-message" class="message" role="status" aria-live="polite" hidden></div>
+        <div id="event-list" class="event-grid" aria-live="polite" aria-busy="true"></div>
+      </section>
+
+      <section id="my-registrations" class="content-section lower-section" aria-labelledby="registrations-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR PLANS</p>
+            <h2 id="registrations-title">My registrations</h2>
+          </div>
+          <span id="registration-count" class="result-count">Add your campus ID to view</span>
+        </div>
+        <div id="registration-list" class="compact-list"></div>
+      </section>
+
+      <section id="hosted-events" class="content-section lower-section" aria-labelledby="hosted-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ORGANIZER VIEW</p>
+            <h2 id="hosted-title">Events hosted by this ID</h2>
+          </div>
+          <span id="hosted-count" class="result-count">Add your campus ID to view</span>
+        </div>
+        <div id="hosted-list" class="compact-list"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand footer-brand" href="#top">
+        <span class="brand-mark material-symbols-outlined" aria-hidden="true">bolt</span>
+        <span>QuadPulse</span>
+      </a>
+      <p>Campus events, kept in motion.</p>
+    </footer>
+  </body>
+</html>

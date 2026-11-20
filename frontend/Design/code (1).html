@@ -1,0 +1,398 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuadPulse — Organizer Event Studio</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#1D4ED8',
+        'on-primary': '#FFFFFF',
+        'primary-container': '#DBEAFE',
+        'on-primary-container': '#1E3A8A',
+        'accent': '#C2410C',
+        'on-accent': '#FFFFFF',
+        'accent-container': '#FFEDD5',
+        'on-accent-container': '#7C2D12',
+        'surface': '#FAF9F6',
+        'on-surface': '#111318',
+        'surface-container-lowest': '#FFFFFF',
+        'surface-container-low': '#F3F2EE',
+        'surface-container': '#EAE8E1',
+        'surface-container-high': '#E0DDD4',
+        'on-surface-variant': '#4B5563',
+        'outline': '#6B7280',
+        'outline-variant': '#D6D3CB',
+        'success': '#0F766E',
+        'on-success': '#FFFFFF',
+        'success-container': '#CCFBF1',
+        'on-success-container': '#134E4A',
+        'warning': '#B45309',
+        'on-warning': '#FFFFFF',
+        'warning-container': '#FEF3C7',
+        'on-warning-container': '#78350F',
+        'error': '#B91C1C',
+        'on-error': '#FFFFFF',
+        'error-container': '#FEE2E2',
+        'on-error-container': '#7F1D1D',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '10px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '48px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Playfair"', 'sans-serif'],
+        'headline': ['"Instrument Sans"', 'sans-serif'],
+        'title': ['"Instrument Sans"', 'sans-serif'],
+        'body': ['"Instrument Sans"', 'sans-serif'],
+        'label': ['"Instrument Sans"', 'sans-serif'],
+        'mono': ['"Red Hat Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['44px', { lineHeight: '50px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-lg-mobile': ['32px', { lineHeight: '38px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-lg': ['30px', { lineHeight: '36px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-md': ['22px', { lineHeight: '28px', letterSpacing: '-0.2px', fontWeight: '700' }],
+        'headline-sm': ['18px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-md': ['16px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-lg': ['16px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0.1px', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.2px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.3px', fontWeight: '600' }],
+        'mono-md': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+        'mono-sm': ['11px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '150ms',
+        'surface-enter': '220ms',
+        'surface-exit': '140ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+        'surface-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'surface-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Playfair:wght@700&amp;family=Red+Hat+Mono:wght@500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>.material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }</style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Top Navigation Bar (Shared Shell) -->
+  <header class="sticky top-0 z-40 h-16 bg-surface-container-lowest border-b border-outline-variant">
+    <div class="max-w-7xl mx-auto h-full px-6 flex items-center justify-between gap-4">
+      <!-- Left Corner: Brand + Role Switcher Dropdown -->
+      <div class="flex items-center gap-6">
+        <a href="#" class="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
+          <span class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">bolt</span>
+          </span>
+          <span data-design-text-token="headline-sm" class="font-headline text-headline-sm text-on-surface tracking-tight">QuadPulse</span>
+        </a>
+
+        <!-- Corner Dropdown 1: Role Switcher -->
+        <div data-component-id="dropdown-menu-with-icon" data-component-type="dropdown-menu" data-component-variant="with-icon" class="relative">
+          <button id="role-dropdown-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu-roles" onclick="toggleMenu(&#39;menu-roles&#39;, &#39;role-dropdown-btn&#39;)" class="inline-flex items-center gap-2 px-3.5 py-2 rounded bg-accent-container text-on-accent-container border border-accent hover:bg-accent hover:text-on-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-title-md" aria-hidden="true">campaign</span>
+            <span data-design-text-token="label-lg" class="font-label text-label-lg" id="active-role-label">Role: Organizer</span>
+            <span class="material-symbols-outlined text-title-md" aria-hidden="true">expand_more</span>
+          </button>
+
+          <ul role="menu" id="menu-roles" hidden class="absolute left-0 mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-md shadow-lg py-1.5 z-50">
+            <li role="presentation" class="px-3 py-1.5">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm text-outline uppercase">Switch Active Role</span>
+            </li>
+            <li role="menuitem" onclick="selectRole(&#39;Student&#39;)" class="px-3 py-2 flex items-center gap-2.5 hover:bg-surface-container-low cursor-pointer">
+              <span class="material-symbols-outlined text-title-md text-primary" aria-hidden="true">school</span>
+              <span data-design-text-token="label-lg" class="font-label text-label-lg">Student</span>
+            </li>
+            <li role="menuitem" onclick="selectRole(&#39;Organizer&#39;)" class="px-3 py-2 flex items-center justify-between gap-2 bg-accent-container text-on-accent-container cursor-pointer">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-title-md" aria-hidden="true">campaign</span>
+                <span data-design-text-token="label-lg" class="font-label text-label-lg">Organizer</span>
+              </div>
+              <span class="material-symbols-outlined text-title-md">check</span>
+            </li>
+            <li role="menuitem" onclick="selectRole(&#39;Admin&#39;)" class="px-3 py-2 flex items-center gap-2.5 hover:bg-surface-container-low cursor-pointer">
+              <span class="material-symbols-outlined text-title-md text-success" aria-hidden="true">admin_panel_settings</span>
+              <span data-design-text-token="label-lg" class="font-label text-label-lg">Admin</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Center Nav Links -->
+      <nav aria-label="Primary" class="hidden md:flex items-center gap-6">
+        <a href="#" class="text-primary border-b-2 border-primary py-5">
+          <span data-design-text-token="label-lg" class="font-label text-label-lg">Event Studio</span>
+        </a>
+        <a href="#campus-feed" class="text-on-surface-variant hover:text-on-surface py-5 transition-colors duration-state-change">
+          <span data-design-text-token="label-lg" class="font-label text-label-lg">Register for Events</span>
+        </a>
+      </nav>
+
+      <!-- Right Corner: Database User ID Switcher Dropdown -->
+      <div class="flex items-center gap-3">
+        <div data-component-id="dropdown-menu-standard" data-component-type="dropdown-menu" data-component-variant="standard" class="relative">
+          <button id="userid-dropdown-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu-user-ids" onclick="toggleMenu(&#39;menu-user-ids&#39;, &#39;userid-dropdown-btn&#39;)" class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded bg-surface-container-lowest border border-outline-variant hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors duration-state-change">
+            <span class="material-symbols-outlined text-primary text-title-md" aria-hidden="true">fingerprint</span>
+            <span data-design-text-token="mono-md" class="font-mono text-mono-md text-on-surface" id="active-user-id">usr_3c19...7b04</span>
+            <span class="material-symbols-outlined text-outline text-title-md" aria-hidden="true">expand_more</span>
+          </button>
+
+          <ul role="menu" id="menu-user-ids" hidden class="absolute right-0 mt-2 w-72 bg-surface-container-lowest border border-outline-variant rounded-md shadow-lg py-1.5 z-50">
+            <li role="presentation" class="px-3 py-1.5 border-b border-outline-variant mb-1">
+              <span data-design-text-token="label-sm" class="font-label text-label-sm text-outline uppercase">Database User IDs (users)</span>
+            </li>
+            <li role="menuitem" onclick="selectUserId(&#39;usr_3c19...7b04&#39;)" class="px-3 py-2 flex items-center justify-between gap-2 bg-primary-container text-on-primary-container cursor-pointer">
+              <div class="flex flex-col">
+                <span data-design-text-token="mono-md" class="font-mono text-mono-md">usr_3c19...7b04</span>
+                <span data-design-text-token="body-sm" class="font-body text-body-sm">liam.patel@campus.edu · organizer</span>
+              </div>
+              <span class="material-symbols-outlined text-title-md">check</span>
+            </li>
+            <li role="menuitem" onclick="selectUserId(&#39;usr_8f4a...29c1&#39;)" class="px-3 py-2 flex items-center justify-between gap-2 hover:bg-surface-container-low cursor-pointer">
+              <div class="flex flex-col">
+                <span data-design-text-token="mono-md" class="font-mono text-mono-md">usr_8f4a...29c1</span>
+                <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">maya.chen@campus.edu · student</span>
+              </div>
+            </li>
+            <li role="menuitem" onclick="selectUserId(&#39;usr_90b2...4f88&#39;)" class="px-3 py-2 flex items-center justify-between gap-2 hover:bg-surface-container-low cursor-pointer">
+              <div class="flex flex-col">
+                <span data-design-text-token="mono-md" class="font-mono text-mono-md">usr_90b2...4f88</span>
+                <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">elena.ross@campus.edu · admin</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-10">
+
+    <!-- Page Header -->
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div class="flex flex-col gap-2">
+        <h1 data-design-text-token="display-lg" class="font-display text-display-lg text-on-surface">Organizer Event Studio</h1>
+        <p data-design-text-token="body-lg" class="font-body text-body-lg text-on-surface-variant max-w-prose">
+          Publish new campus events under your selected Organizer ID, or reserve a seat at fellow club events below.
+        </p>
+      </div>
+      <div class="flex items-center gap-3 px-4 py-2.5 rounded-md bg-surface-container-low border border-outline-variant">
+        <span class="material-symbols-outlined text-primary text-title-md" aria-hidden="true">badge</span>
+        <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Organizer ID:</span>
+        <span data-design-text-token="mono-md" class="font-mono text-mono-md text-on-surface">usr_3c19...7b04</span>
+      </div>
+    </section>
+
+    <!-- Split Workspace: Create Event Form + Hosted Events -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- Left Column: Create New Event Form (events table fields: title, capacity, status, organizer_id) -->
+      <div class="lg:col-span-5 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-5">
+        <header class="flex items-center justify-between border-b border-outline-variant pb-4">
+          <div class="flex flex-col gap-0.5">
+            <h2 data-design-text-token="headline-md" class="font-headline text-headline-md text-on-surface">Create New Event</h2>
+            <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Writes directly to the events table</p>
+          </div>
+          <span class="material-symbols-outlined text-primary text-headline-md" aria-hidden="true">add_box</span>
+        </header>
+
+        <form class="flex flex-col gap-4" onsubmit="event.preventDefault();">
+          <div class="flex flex-col gap-1.5">
+            <label for="event-title" data-design-text-token="label-md" class="font-label text-label-md text-on-surface">Event Title</label>
+            <input id="event-title" type="text" placeholder="e.g. Late Night Figma Jam" class="w-full px-3.5 py-2.5 rounded bg-surface border border-outline-variant text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="event-capacity" data-design-text-token="label-md" class="font-label text-label-md text-on-surface">Capacity (Seats)</label>
+              <input id="event-capacity" type="number" value="80" min="1" class="w-full px-3.5 py-2.5 rounded bg-surface border border-outline-variant font-mono text-mono-md text-on-surface tabular-nums focus:border-primary focus:ring-1 focus:ring-primary">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="event-status" data-design-text-token="label-md" class="font-label text-label-md text-on-surface">Initial Status</label>
+              <select id="event-status" class="w-full px-3.5 py-2.5 rounded bg-surface border border-outline-variant text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary">
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="event-location" data-design-text-token="label-md" class="font-label text-label-md text-on-surface">Campus Venue &amp; Time</label>
+            <input id="event-location" type="text" placeholder="Student Union Room 204 · Thu 7:00 PM" class="w-full px-3.5 py-2.5 rounded bg-surface border border-outline-variant text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary">
+          </div>
+
+          <div class="pt-2">
+            <button data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded bg-primary text-on-primary hover:bg-on-primary-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-title-md" aria-hidden="true">publish</span>
+              <span data-design-text-token="label-lg" class="font-label text-label-lg">Publish Event</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Column: Events Hosted by Current Organizer ID -->
+      <div class="lg:col-span-7 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 data-design-text-token="headline-md" class="font-headline text-headline-md text-on-surface">Your Hosted Events (2)</h2>
+          <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Filtered by organizer_id</span>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <article class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2.5">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm px-2.5 py-0.5 rounded-full bg-success-container text-on-success-container">Published</span>
+                <span data-design-text-token="mono-sm" class="font-mono text-mono-sm text-outline">evt_9a2f...10c</span>
+              </div>
+              <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-on-surface">Campus AI Buildathon &amp; Demo Night</h3>
+              <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Engineering Hall Atrium · Fri, Nov 22</p>
+            </div>
+            <div class="flex items-center gap-5">
+              <div class="text-right">
+                <p data-design-text-token="mono-md" class="font-mono text-mono-md text-on-surface tabular-nums">108 / 120</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Registered</p>
+              </div>
+              <button type="button" class="px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant hover:border-primary text-on-surface transition-colors duration-state-change">
+                <span data-design-text-token="label-md" class="font-label text-label-md">Manage</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2.5">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm px-2.5 py-0.5 rounded-full bg-warning-container text-on-warning-container">Draft</span>
+                <span data-design-text-token="mono-sm" class="font-mono text-mono-sm text-outline">evt_5c81...04b</span>
+              </div>
+              <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-on-surface">Spring Founder Coffee Mixer</h3>
+              <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Quad Café Lounge · Tue, Dec 3</p>
+            </div>
+            <div class="flex items-center gap-5">
+              <div class="text-right">
+                <p data-design-text-token="mono-md" class="font-mono text-mono-md text-on-surface tabular-nums">0 / 40</p>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Capacity</p>
+              </div>
+              <button type="button" class="px-3.5 py-2 rounded bg-primary text-on-primary hover:bg-on-primary-container transition-colors duration-state-change">
+                <span data-design-text-token="label-md" class="font-label text-label-md">Publish</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Organizer Can Also Register for Other Events -->
+    <section id="campus-feed" class="flex flex-col gap-5 pt-4 border-t border-outline-variant">
+      <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-1">
+          <h2 data-design-text-token="headline-lg" class="font-display text-headline-lg text-on-surface">Join Other Campus Events</h2>
+          <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">As an organizer, you can also register as an attendee for any open event.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+        <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="h-full bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col justify-between shadow-sm">
+          <div class="p-5 flex flex-col gap-3">
+            <header class="flex items-start justify-between gap-2">
+              <div class="flex flex-col gap-1">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm text-accent uppercase">Music &amp; Arts</span>
+                <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-on-surface">Golden Hour Quad Sessions</h3>
+              </div>
+              <span data-design-text-token="mono-md" class="font-mono text-mono-md text-on-surface tabular-nums">142 / 200</span>
+            </header>
+            <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+              Three student indie bands live on the South Lawn. Acoustic sets start at sunset.
+            </p>
+          </div>
+          <footer class="px-5 py-3.5 bg-surface-container-low border-t border-outline-variant flex items-center justify-between gap-3">
+            <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Sat, Nov 23 · 5:00 PM</span>
+            <button type="button" class="inline-flex items-center justify-center px-3.5 py-2 rounded bg-primary text-on-primary hover:bg-on-primary-container transition-colors duration-state-change">
+              <span data-design-text-token="label-md" class="font-label text-label-md">Reserve Spot</span>
+            </button>
+          </footer>
+        </article>
+
+        <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="h-full bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col justify-between shadow-sm">
+          <div class="p-5 flex flex-col gap-3">
+            <header class="flex items-start justify-between gap-2">
+              <div class="flex flex-col gap-1">
+                <span data-design-text-token="label-sm" class="font-label text-label-sm text-primary uppercase">Robotics</span>
+                <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-on-surface">Autonomous Rover Field Test</h3>
+              </div>
+              <span data-design-text-token="mono-md" class="font-mono text-mono-md text-on-surface tabular-nums">28 / 60</span>
+            </header>
+            <p data-design-text-token="body-md" class="font-body text-body-md text-on-surface-variant">
+              Live obstacle-course run with the Mars Rover Society. Open Q&amp;A for spring recruitment.
+            </p>
+          </div>
+          <footer class="px-5 py-3.5 bg-surface-container-low border-t border-outline-variant flex items-center justify-between gap-3">
+            <span data-design-text-token="body-sm" class="font-body text-body-sm text-on-surface-variant">Wed, Nov 27 · 3:00 PM</span>
+            <button type="button" class="inline-flex items-center justify-center px-3.5 py-2 rounded bg-primary text-on-primary hover:bg-on-primary-container transition-colors duration-state-change">
+              <span data-design-text-token="label-md" class="font-label text-label-md">Reserve Spot</span>
+            </button>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function toggleMenu(menuId, btnId) {
+      const menu = document.getElementById(menuId);
+      const btn = document.getElementById(btnId);
+      const isHidden = menu.hasAttribute('hidden');
+      document.querySelectorAll('[role="menu"]').forEach(m => m.setAttribute('hidden', ''));
+      if (isHidden) {
+        menu.removeAttribute('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      } else {
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    }
+    function selectRole(roleName) {
+      document.getElementById('active-role-label').textContent = 'Role: ' + roleName;
+      document.getElementById('menu-roles').setAttribute('hidden', '');
+    }
+    function selectUserId(idText) {
+      document.getElementById('active-user-id').textContent = idText;
+      document.getElementById('menu-user-ids').setAttribute('hidden', '');
+    }
+  </script>
+
+
+</body></html>
