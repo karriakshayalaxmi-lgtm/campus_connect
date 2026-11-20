@@ -24,19 +24,7 @@ supabase: Client = create_client(
 )
 @app.route('/')
 def index():
-    try:
-        response = supabase.table('users').select("*").execute()
-    except APIError as error:
-        return f'<p>Error loading users: {error.message}</p>'
-
-    users = response.data
-
-    html = '<h1>users</h1><ul>'
-    for users in users:
-        html += f'<li>{users["email"]}</li>'
-    html += '</ul>'
-
-    return html
+    return jsonify({"status": "ok", "service": "campus-connect-api"})
 
 
 def is_valid_uuid(value):
@@ -91,10 +79,6 @@ def create_registration():
         event_response = supabase.table('events').select('id, capacity').eq('id', event_id).limit(1).execute()
         if not event_response.data:
             return jsonify({"error": "Event not found"}), 404
-
-        user_response = supabase.table('users').select('id').eq('id', user_id).limit(1).execute()
-        if not user_response.data:
-            return jsonify({"error": "User not found"}), 404
 
         duplicate_response = (
             supabase.table('registrations')
@@ -164,19 +148,10 @@ def list_event_registrations(event_id):
             .execute()
         )
         registrations = registration_response.data
-        user_ids = list({registration['user_id'] for registration in registrations})
-        users_by_id = {}
-        if user_ids:
-            user_response = supabase.table('users').select('id, email').in_('id', user_ids).execute()
-            users_by_id = {user['id']: user.get('email') for user in user_response.data}
     except APIError as error:
         return database_error(error)
 
-    attendees = [
-        {**registration, "email": users_by_id.get(registration['user_id'])}
-        for registration in registrations
-    ]
-    return jsonify(attendees)
+    return jsonify(registrations)
 
 if __name__ == '__main__':
     app.run(
